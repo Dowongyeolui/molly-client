@@ -225,7 +225,6 @@ export default function Product() {
                 }
                 onClick={() => setIsFilterOpen(true)}
               >
-                {" "}
                 {category}
               </button>
             ))}

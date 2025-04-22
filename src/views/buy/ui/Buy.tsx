@@ -14,6 +14,7 @@ import { BuySkeleton } from "./BuySkeleton";
 import buyCancel from "@/features/buy/api/buyCancel";
 import { Order as BuyAddressOrder } from "./BuyAddress";
 
+
 // 타입 정의
 interface Order {
   orderId: number; // string에서 number로 변경
