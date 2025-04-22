@@ -45,7 +45,7 @@ export default async function TossRequest(
     }
 
     const res = await fetch(
-      `${process.env.NEXT_SERVER_URL}/orders2/${userOrderId}/payment`,
+      `${process.env.NEXT_SERVER_URL}/orders/${userOrderId}/payment`,
       {
         method: "POST",
         headers: {

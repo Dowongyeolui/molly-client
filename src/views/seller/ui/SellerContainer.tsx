@@ -17,6 +17,8 @@ import { ProductModify } from "../components/ProductModify";
 import { ProductDelete } from "../components/ProductDelete";
 import { Pageable, ProductData } from "../../../../app/seller/page";
 import { ProductBatch } from "../components/ProductBatch";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 export interface SellerContainerProps {
   productRes: {
@@ -27,6 +29,17 @@ export interface SellerContainerProps {
 
 export default function SellerContainer({ productRes }: SellerContainerProps) {
   const { currentView } = useSellerStore();
+  const searchParams = useSearchParams();
+  const [activeTab, setActiveTab] = useState("상품 조회"); // 기본값
+
+  useEffect(() => {
+    // URL 쿼리 파라미터에서 탭 정보 가져오기
+    const tabParam = searchParams.get("tab");
+    if (tabParam) {
+      console.log(activeTab);
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const viewComponents = {
     "상품 삭제": <ProductDelete />,

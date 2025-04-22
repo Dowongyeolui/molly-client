@@ -201,7 +201,16 @@ export default function ProductDetail({
         setShowToast(true);
       } catch (error) {
         console.error("장바구니 api 오류 발생:", error);
-        router.push("/login");
+
+        const currentPath = window.location.pathname;
+        const itemId = selectedOption.id;
+        const itemQuantity = quantity;
+
+        router.push(
+          `/login?returnUrl=${encodeURIComponent(
+            currentPath
+          )}&action=addToCart&itemId=${itemId}&quantity=${itemQuantity}`
+        );
       }
     });
   };
