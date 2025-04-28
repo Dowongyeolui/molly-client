@@ -226,7 +226,9 @@ notice 컴포넌트가 layoutshift가 일어나는걸 발견
 sop 정책에 의해 다른 도메인으로 인식 -> 주문 상태 초기화
 
 #### 해결방안
+
 1.zustand의 persist 사용하여 로컬 스토리지에 데이터 암호화 하여 저장 후
+
 2.주문 정보를 서버 전송 후 초기화
 
 <img width="326" alt="image" src="https://github.com/user-attachments/assets/1d764733-2b42-4988-9eef-6994acf1d39b" />
