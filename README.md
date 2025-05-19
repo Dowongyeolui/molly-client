@@ -169,7 +169,7 @@ https://drive.google.com/file/d/13Jez_t-zlCY9VO-dskcfzjaCsl4pcMxr/view
 | 2차  | LCP 2.3 s (재발) | **구조 개선**<br>컴파운드 컴포넌트 도입 | **LCP 0.40 s** (-82 %) |
 | 3차  | CLS 0.30 | **Layout shift 방지**<br>• Skeleton + `contain: layout paint`<br>• Notice 영역 `min-height` 확보 | **CLS 0.00** |
 
-### 1차 문제상항
+#### 1차 문제상항
 - Lighthouse 측정시에 LCP 점수가 2.3초로 렌더링 및 CLS 0.5 측정 됨
 - performance 탭 성능 측정시에 이미지 렌더링 속도와 이미지로딩에 오랜시간 걸리는걸 확인
 
@@ -182,7 +182,7 @@ https://drive.google.com/file/d/13Jez_t-zlCY9VO-dskcfzjaCsl4pcMxr/view
 <img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/60ee4ec6-cff3-4bad-a8e2-9027553dbbe6" />
  
 
-### 2차 문제상황
+#### 2차 문제상황
 - LCP가 다시 2.3초로 증가함
 
 #### 해결방안
@@ -201,10 +201,10 @@ notice 컴포넌트가 layoutshift가 일어나는걸 발견
 <img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/f1e7331e-d26c-44bc-a643-ab0d445fc300" />
 
 
-해결 방안
+#### 해결 방안
 1. 최소 높이 지정과 컨텐츠 영역 미리 확보하여 방지
 
-결과
+#### 결과
 
 <img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/b7159d26-60f7-41ae-a223-2179e5d818c8" />
 <img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/8b5304a5-e35e-4c4b-8e46-8265f0920a10" />
@@ -221,7 +221,7 @@ notice 컴포넌트가 layoutshift가 일어나는걸 발견
 | 3. **CLS ≈ 0** | 레이아웃 시프트 없음 (Cart와 동일 패턴 적용) | Skeleton + `contain:layout paint` + 고정 높이 | **CLS 0.00** |
 
 
-### 1차 문제상항
+#### 1차 문제상항
 토스결제 결제정보 입력 후 successUrl로 이동시
 sop 정책에 의해 다른 도메인으로 인식 -> 주문 상태 초기화
 
@@ -233,7 +233,7 @@ sop 정책에 의해 다른 도메인으로 인식 -> 주문 상태 초기화
 
 <img width="326" alt="image" src="https://github.com/user-attachments/assets/1d764733-2b42-4988-9eef-6994acf1d39b" />
 
-### 2차 문제상항
+#### 2차 문제상항
 - 장바구니 페이지에서 일어났던 문제와 마찬가지로 이미지 로딩 시간으로 인해 LCP 점수가 2.3초로 측정
 - Font 최적화, 동적임포트, 레이지 로딩등 변화 없음
 
@@ -242,12 +242,54 @@ sop 정책에 의해 다른 도메인으로 인식 -> 주문 상태 초기화
 #### 해결방안 
 - 장바구니 페이지와 마찬가지로 구조적으로 컴파운드 컴포넌트 적용 및 커스텀 훅 분리
 
-결과
+#### 결과
 
 <img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/d3b1def2-a440-400e-9d9c-a62ac63929bd" />
 
 
 <br>
+
+### 3. Product Detail Page
+
+#### 문제상황 1
+접근성 기준을 충분히 반영하지 않아 Lighthouse 접근성 점수가 84점으로 나오게 되어 사용자 경험 저하가 우려
+
+#### 해결방안
+효율적인 시맨틱 구조, WCAG 2.1 기준 충족, 버튼 및 인터랙션 요소에 aria-label 추가, 이미지에 alt 텍스트 추가, 키보드 탐색 지원, 충분한 색상 대비 제공
+
+#### 결과
+Lighthouse의 접근성 점수가 84점에서 100점으로 향상
+![image](https://github.com/user-attachments/assets/83ee8906-397d-40fc-bdd8-95fa4f154cd0)
+
+#### 문제 상황 2
+페이지 로딩 시 Footer 위치가 콘텐츠 길이에 따라 변동되어 레이아웃이 이동
+
+#### 해결방안
+Sticky Footer를 적용해 콘텐츠가 적을 때는 화면 하단에 고정되고 많을 때는 자연스럽게 콘텐츠 흐름을 따라 배치되도록 구조를 개선
+
+#### 결과
+CLS가 0.451s에서 0s으로 개선되어 레이아웃 안정성을 확보
+![image](https://github.com/user-attachments/assets/d35e7ec8-2749-4767-bbf2-a21833bce247)
+![image](https://github.com/user-attachments/assets/32d9559f-3226-479c-b106-54b28373664c)
+
+#### 문제 상황 3
+Next.js의 이미지 최적화 기능 대신 자체 이미지 서버의 이미지 최적화 구현으로 LCP 대상 이미지가 저해상도 요청, 명확하지 않은 크기 지정 등으로 인해 브라우저 렌더링을 지연
+
+#### 해결방안
+- priority={true}, fetchPriority="high", 명확한 width/height, 고해상도 이미지 요청
+- LCP에 중요한 콘텐츠만 먼저 렌더링하고 그 외 내용은 동적 import
+- CDN 연결 및 캐싱
+
+#### 결과
+LCP가 2.5s에서 0.6s로 개선
+![image](https://github.com/user-attachments/assets/8b757973-61ab-4aec-b981-66181e9ff1fa)
+![image](https://github.com/user-attachments/assets/1e667b52-622c-4337-91ca-934d84e60e5e)
+![image](https://github.com/user-attachments/assets/5b961681-74e1-41f6-9d7b-9378335ee4e7)
+
+
+
+<br>
+
 
 ## Git Convention
 
