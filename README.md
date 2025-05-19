@@ -259,6 +259,7 @@ sop 정책에 의해 다른 도메인으로 인식 -> 주문 상태 초기화
 
 #### 결과
 Lighthouse의 접근성 점수가 84점에서 100점으로 향상
+
 ![image](https://github.com/user-attachments/assets/83ee8906-397d-40fc-bdd8-95fa4f154cd0)
 
 #### 문제 상황 2
@@ -269,8 +270,6 @@ Sticky Footer를 적용해 콘텐츠가 적을 때는 화면 하단에 고정되
 
 #### 결과
 CLS가 0.451s에서 0s으로 개선되어 레이아웃 안정성을 확보
-<img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/d35e7ec8-2749-4767-bbf2-a21833bce247" />
-<img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/32d9559f-3226-479c-b106-54b28373664c" />
 
 ![image](https://github.com/user-attachments/assets/d35e7ec8-2749-4767-bbf2-a21833bce247)
 ![image](https://github.com/user-attachments/assets/32d9559f-3226-479c-b106-54b28373664c)
@@ -285,6 +284,7 @@ Next.js의 이미지 최적화 기능 대신 자체 이미지 서버의 이미�
 
 #### 결과
 LCP가 2.5s에서 0.6s로 개선
+
 ![image](https://github.com/user-attachments/assets/8b757973-61ab-4aec-b981-66181e9ff1fa)
 ![image](https://github.com/user-attachments/assets/1e667b52-622c-4337-91ca-934d84e60e5e)
 ![image](https://github.com/user-attachments/assets/5b961681-74e1-41f6-9d7b-9378335ee4e7)
