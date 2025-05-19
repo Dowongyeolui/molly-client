@@ -269,6 +269,9 @@ Sticky Footer를 적용해 콘텐츠가 적을 때는 화면 하단에 고정되
 
 #### 결과
 CLS가 0.451s에서 0s으로 개선되어 레이아웃 안정성을 확보
+<img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/d35e7ec8-2749-4767-bbf2-a21833bce247" />
+<img width="305" height='305' alt="image" src="https://github.com/user-attachments/assets/32d9559f-3226-479c-b106-54b28373664c" />
+
 ![image](https://github.com/user-attachments/assets/d35e7ec8-2749-4767-bbf2-a21833bce247)
 ![image](https://github.com/user-attachments/assets/32d9559f-3226-479c-b106-54b28373664c)
 
