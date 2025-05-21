@@ -224,6 +224,7 @@ export default function ProductDetail({
     if (!productId) return;
     fetchProduct();
   }, [productId]);
+
   //추천 상품 api 요청
   useEffect(() => {
     if (product) fetchRecommendedProducts();
@@ -237,7 +238,7 @@ export default function ProductDetail({
 
       const data = await response;
 
-      // 이미지 서버 연결 안될 때 기본 이미지로 대체(504 떠도 페이지 렌더링하기)
+      // 이미지 서버 연결 안될 때 기본 이미지로 대체
       if (!data.thumbnail || !data.thumbnail.path) {
         data.thumbnail = {
           path: "/images/noImage.svg",
@@ -255,13 +256,96 @@ export default function ProductDetail({
   };
 
   // 로딩 중일 때 스켈레톤 UI 표시 (isLoading이 true면 무조건 표시됨)
+  // if (isLoading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen">
+  //       <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+  //     </div>
+  //   );
+  // }
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-12 h-12 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  return (
+    <main>
+      {/* 구매 섹션 스켈레톤 */}
+      <article className="max-w-screen-xl mx-auto p-6 flex gap-16">
+        {/* 썸네일 이미지 스켈레톤 */}
+        <div className="w-1/2 px-8 relative min-h-[600px]">
+          <div className="w-full h-full bg-gray-200 animate-pulse rounded-md"></div>
+        </div>
+
+        {/* 세로 구분선 */}
+        <div className="border-l border-gray-300 h-auto"></div>
+
+        {/* 오른쪽: 상품 정보 스켈레톤 */}
+        <div className="w-1/2 px-8 space-y-4">
+          <header className="flex justify-between items-center">
+            {/* 브랜드명 스켈레톤 */}
+            <div className="h-8 w-40 bg-gray-200 animate-pulse rounded-md"></div>
+            {/* 아이콘 컨테이너 스켈레톤 */}
+            <div className="flex items-center gap-4">
+              <div className="w-6 h-6 bg-gray-200 animate-pulse rounded-full"></div>
+              <div className="w-6 h-6 bg-gray-200 animate-pulse rounded-full"></div>
+            </div>
+          </header>
+          
+          {/* 제품명 스켈레톤 */}
+          <div className="h-7 w-full bg-gray-200 animate-pulse rounded-md"></div>
+
+          {/* 가격 정보 스켈레톤 */}
+          <div className="text-lg">
+            <div className="h-8 w-32 bg-gray-200 animate-pulse rounded-md"></div>
+          </div>
+
+          {/* 포인트 및 혜택 스켈레톤 */}
+          <section className="border-t pt-4 space-y-1">
+            <h3 className="sr-only">상품 혜택 정보</h3>
+            <div className="flex gap-14">
+              <div className="h-5 w-24 bg-gray-200 animate-pulse rounded-md"></div>
+              <div className="h-5 w-48 bg-gray-200 animate-pulse rounded-md"></div>
+            </div>
+
+            <div className="flex gap-12">
+              <div className="h-5 w-24 bg-gray-200 animate-pulse rounded-md"></div>
+              <div className="flex flex-col gap-1">
+                <div className="h-5 w-48 bg-gray-200 animate-pulse rounded-md"></div>
+                <div className="h-5 w-36 bg-gray-200 animate-pulse rounded-md"></div>
+              </div>
+            </div>
+
+            <div className="flex gap-16">
+              <div className="h-5 w-24 bg-gray-200 animate-pulse rounded-md"></div>
+              <div className="h-5 w-36 bg-gray-200 animate-pulse rounded-md"></div>
+            </div>
+
+            <div className="flex gap-20">
+              <div className="h-5 w-24 bg-gray-200 animate-pulse rounded-md"></div>
+              <div className="flex flex-col gap-1">
+                <div className="h-5 w-20 bg-gray-200 animate-pulse rounded-md"></div>
+                <div className="h-5 w-48 bg-gray-200 animate-pulse rounded-md"></div>
+                <div className="h-5 w-40 bg-gray-200 animate-pulse rounded-md"></div>
+              </div>
+            </div>
+          </section>
+
+          {/* 옵션 선택 스켈레톤 */}
+          <section className="mt-4 relative border-t">
+            <div className="h-6 w-28 bg-gray-200 animate-pulse rounded-md mt-4"></div>
+            <div className="w-full h-12 bg-gray-200 animate-pulse rounded-md mt-2"></div>
+          </section>
+
+          {/* 구매 버튼 스켈레톤 */}
+          <div className="flex gap-4 mt-4">
+            <div className="w-1/2 h-14 bg-gray-200 animate-pulse rounded-md"></div>
+            <div className="w-1/2 h-14 bg-gray-200 animate-pulse rounded-md"></div>
+          </div>
+        </div>
+      </article>
+
+      {/* 상세 섹션, 추천 상품, 리뷰 섹션 스켈레톤은 생략 - 동적 임포트되므로 */}
+    </main>
+  );
+}
+
   // product가 null이면 오류 메시지 표시
   if (!product) {
     return (
@@ -300,17 +384,20 @@ export default function ProductDetail({
   };
 
   return (
-    <>
+    <main>
       {/* 구매 섹션 */}
-      <div className="max-w-screen-xl mx-auto p-6 flex gap-16">
+      <article className="max-w-screen-xl mx-auto p-6 flex gap-16">
         {/* 썸네일 이미지 */}
-        <div className="w-1/2 px-8">
+        <div className="w-1/2 px-8 relative min-h-[600px]">
           <Image
             priority={true}
+            fetchPriority="high"
             src={`${imageUrl}${product.thumbnail.path}?w=600&h=600&r=true`}
             alt={product?.productName || "상품 이미지"}
             width={600}
             height={600}
+            // style={{ minHeight: '600px' }}
+            className="object-contain"
             unoptimized={true}
           />
         </div>
@@ -320,7 +407,7 @@ export default function ProductDetail({
 
         {/* 오른쪽: 상품 정보 */}
         <div className="w-1/2 px-8 space-y-4">
-          <div className="flex justify-between items-center">
+          <header className="flex justify-between items-center">
             <h1 className="text-2xl font-bold">{product?.brandName}</h1>
             {/* 아이콘 컨테이너 */}
             <div className="flex items-center gap-4">
@@ -339,16 +426,20 @@ export default function ProductDetail({
                 <Share2 className="w-6 h-6" />
               </button>
             </div>
-          </div>
-          <p className="text-gray-600">{product.productName}</p>
+          </header>
+          {/* <p className="text-gray-600">{product.productName}</p> */}
+          <h2 className="text-gray-600 text-xl">{product.productName}</h2>
+
           {/* 가격 정보 */}
           <div className="text-lg">
             <span className="text-black font-bold text-2xl  block">
               {product.price.toLocaleString()}원
             </span>
           </div>
+
           {/* 포인트 및 혜택 */}
-          <div className="border-t pt-4 space-y-1">
+          <section className="border-t pt-4 space-y-1">
+            <h3 className="sr-only">상품 혜택 정보</h3> {/* 이건 시각적으로 숨김김 */}
             <div className="flex gap-14">
               <span className="text-sm text-gray-600">구매 적립금</span>
               <span className="text-sm ml-2">
@@ -386,13 +477,18 @@ export default function ProductDetail({
                 </span>
               </div>
             </div>
-          </div>
+          </section>
+
           {/* 옵션 선택 */}
-          <div className="mt-4 relative border-t">
-            <p className="font-semibold mt-4">옵션 선택</p>
-            <button
+          <section className="mt-4 relative border-t">
+            {/* <p className="font-semibold mt-4">옵션 선택</p> */}
+            <h3 className="font-semibold mt-4">옵션 선택</h3>
+            <button 
+              aria-label="옵션 선택하기"
               className="w-full border px-4 py-3 mt-2 text-left "
               onClick={() => setIsDropdownOpen((prev) => !prev)}
+              aria-expanded={isDropdownOpen}
+              aria-controls="options-dropdown"
             >
               {selectedOption
                 ? `${selectedOption.color} / ${selectedOption.size}`
@@ -400,19 +496,23 @@ export default function ProductDetail({
             </button>
             {/* 드롭다운 메뉴 */}
             {isDropdownOpen && (
-              <ul className="absolute left-0 w-full border mt-2 bg-white shadow-md z-10">
+              <ul id="options-dropdown"
+                  className="absolute left-0 w-full border mt-2 bg-white shadow-md z-10"
+                  role="listbox">
                 {product.items.map((item) => (
                   <li
                     key={item.id}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => handleOptionSelect(item)}
+                    role="option" 
+                    aria-selected={selectedOption?.id === item.id}
                   >
                     {item.color} / {item.size}
                   </li>
                 ))}
               </ul>
             )}
-          </div>
+          </section>
           {selectedOption && (
             <div className="border p-4 rounded-md flex flex-col justify-between items-start mt-2 bg-[#F6F6F6]">
               <div>
@@ -421,16 +521,17 @@ export default function ProductDetail({
 
               <div className="flex justify-between items-center w-full mt-2">
                 <div className="flex items-center border rounded-md overflow-hidden bg-white">
-                  <button
+                  <button aria-label="수량 감소하기"
                     className="px-4 py-2 border-r bg-white"
                     onClick={handleDecrease}
                   >
                     -
                   </button>
-                  <span className="px-6 py-2 text-center bg-white">
+                  <span className="px-6 py-2 text-center bg-white"
+                        aria-live="polite" aria-label={`수량 ${quantity}개`}>
                     {quantity}
                   </span>
-                  <button
+                  <button aria-label="수량 증가하기"
                     className="px-4 py-2 border-l bg-white"
                     onClick={handleIncrease}
                   >
@@ -446,14 +547,14 @@ export default function ProductDetail({
           )}
           {/* 구매 버튼 */}
           <div className="flex gap-4 mt-4">
-            <button
+            <button aria-label="상품 바로 구매하기"
               className="w-1/2 bg-black text-white py-3 text-lg font-semibold hover:bg-orange-600"
               onClick={handleBuyNow}
             >
               {" "}
               바로 구매
             </button>
-            <button
+            <button aria-label="상품 장바구니에에 담기"
               className="w-1/2 border border-black py-3 text-lg font-semibold"
               onClick={handleCartButton}
               disabled={isPending}
@@ -463,10 +564,10 @@ export default function ProductDetail({
             </button>
           </div>
         </div>
-      </div>
+      </article>
 
       {/* 상세 섹션 */}
-      <div ref={descriptionRef}>
+      <section ref={descriptionRef}>
         {showDescription && (
           <ProductDescription
             images={product.productDescriptionImages}
@@ -475,15 +576,15 @@ export default function ProductDetail({
             setShowDetails={setShowDetails}
           />
         )}
-      </div>
+      </section>
 
       {/* 추천 상품 섹션 */}
-      <div ref={recommendedRef}>
+      <section ref={recommendedRef}>
         {showRecommended && <ProductRecommend products={recommendedProducts} />}
-      </div>
+      </section>
 
       {/* 리뷰 섹션 */}
-      <div ref={reviewRef}>
+      <section ref={reviewRef}>
         {showReview && (
           <ProductReview
             reviews={reviews}
@@ -493,7 +594,7 @@ export default function ProductDetail({
             reviewOpenModal={reviewOpenModal}
           />
         )}
-      </div>
+      </section>
 
       {/* 배송정보 및 교환/환불 안내 섹션 */}
       <section className="max-w-screen-lg mx-auto mt-32 px-4">
@@ -563,7 +664,12 @@ export default function ProductDetail({
 
       {/* 리뷰 모달 창 */}
       {isreviewModalOpen && selectedReview && (
-        <ReviewModal review={selectedReview} onClose={reviewCloseModal} />
+        <dialog
+          open
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        >
+          <ReviewModal review={selectedReview} onClose={reviewCloseModal} />
+        </dialog>
       )}
 
       {showToast && (
@@ -572,6 +678,6 @@ export default function ProductDetail({
           onClose={handleToastClose}
         />
       )}
-    </>
+    </main>
   );
 }

@@ -7,77 +7,6 @@ import FilterSidebar from "../FilterSidebar";
 import SortModal from "../SortModal";
 import getProduct from "@/shared/api/getProduct";
 import ProductItem, { ProductType  } from "@/shared/ui/ProductItem";
-// interface Thumbnail {
-//   path: string;
-//   filename: string;
-// }
-// interface Product {
-//   id: number;
-//   url: string;
-//   brandName: string;
-//   productName: string;
-//   price: number;
-//   thumbnail: Thumbnail;
-// }
-
-// 상품 아이템 컴포넌트 분리
-// const ProductItem = memo(function ProductItem({ 
-//   item, 
-//   index, 
-//   isRankingPage, 
-//   imageUrl, 
-//   onProductClick 
-// }: { 
-//   item: Product; 
-//   index: number; 
-//   isRankingPage: boolean; 
-//   imageUrl: string | undefined;
-//   onProductClick: (id: number) => void;
-// }) {  // 여기서 화살표 함수(=>) 대신 중괄호({) 사용
-//   console.log(`ProductItem ${item.id} 렌더링`);
-
-//   return (
-//     <div className="flex flex-col items-center mt-10">
-//       <div className="aspect-square relative w-full">
-//         {/* 랭킹 뱃지 */}
-//         {isRankingPage && (
-//           <div className="absolute top-0 left-0 bg-black text-white text-sm px-2 py-1 z-10 text-center">
-//             {index + 1}
-//           </div>
-//         )}
-//         <Image
-//           src={
-//             item.url
-//               ? `${imageUrl}${item.url}?w=300&h=300&r=true`
-//               : "/images/noImage.svg"
-//           }
-//           alt={item.productName}
-//           fill
-//           loading="eager"
-//           fetchPriority="high"
-//           priority={true}
-//           className="h-full object-cover cursor-pointer"
-//           onClick={() => onProductClick(item.id)}
-//           unoptimized={true}
-//         />
-//       </div>
-//       <button
-//         className="flex flex-col items-start w-full overflow-hidden"
-//         onClick={() => onProductClick(item.id)}
-//       >
-//         <p className="text-left mt-1 text-sm font-semibold">
-//           {item.brandName}
-//         </p>
-//         <p className="text-left text-sm text-gray-500 truncate w-full">
-//           {item.productName}
-//         </p>
-//         <p className="text-left text-black-500 font-semibold">
-//           {item.price.toLocaleString()}원
-//         </p>
-//       </button>
-//     </div>
-//   );
-// });
 
 const categories = ["카테고리", "성별", "색상", "가격", "사이즈", "브랜드"];
 
@@ -310,53 +239,6 @@ export default function Product() {
             <>
               {/* 기존 상품 UI : productList가 null이 아니고 비어있지 않을 때*/}
               {productList &&
-                // productList.map((item, index) => (
-                //   <div
-                //     key={item.id}
-                //     className="flex flex-col items-center mt-10"
-                //   >
-                //     <div className="aspect-square relative w-full">
-                     
-                //       {isRankingPage && (
-                //         <div className="absolute top-0 left-0 bg-black text-white text-sm px-2 py-1 z-10 text-center">
-                //           {index + 1}
-                //         </div>
-                //       )}
-                //       <Image
-                //         src={
-                //           item.url
-                //             ? `${imageUrl}${item.url}?w=300&h=300&r=true`
-                //             : "/images/noImage.svg"
-                //         }
-                //         alt={item.productName}
-                //         fill
-                //         loading="eager"
-                //         fetchPriority="high"
-                //         priority={true}
-                //         className="h-full object-cover cursor-pointer"
-                //         onClick={() => handleProductClick(item.id)}
-                //         unoptimized={true}
-                //       />
-                //     </div>
-                //     <button
-                //       className="flex flex-col items-start w-full overflow-hidden"
-                //       onClick={() => handleProductClick(item.id)}
-                //     >
-                //       <p className="text-left mt-1 text-sm font-semibold">
-                //         {" "}
-                //         {item.brandName}{" "}
-                //       </p>
-                //       <p className="text-left text-sm text-gray-500 truncate w-full">
-                //         {" "}
-                //         {item.productName}{" "}
-                //       </p>
-                //       <p className="text -left text-black-500 font-semibold">
-                //         {" "}
-                //         {item.price.toLocaleString()}원
-                //       </p>
-                //     </button>
-                //   </div>
-                // ))
                 productList.map((item, index) => (
                   <ProductItem
                     key={item.id}
