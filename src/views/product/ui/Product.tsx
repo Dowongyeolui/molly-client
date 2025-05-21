@@ -1,27 +1,89 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback  } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import FilterSidebar from "../FilterSidebar";
 import SortModal from "../SortModal";
 import getProduct from "@/shared/api/getProduct";
-interface Thumbnail {
-  path: string;
-  filename: string;
-}
-interface Product {
-  id: number;
-  url: string;
-  brandName: string;
-  productName: string;
-  price: number;
-  thumbnail: Thumbnail;
-}
+import ProductItem, { ProductType  } from "@/shared/ui/ProductItem";
+// interface Thumbnail {
+//   path: string;
+//   filename: string;
+// }
+// interface Product {
+//   id: number;
+//   url: string;
+//   brandName: string;
+//   productName: string;
+//   price: number;
+//   thumbnail: Thumbnail;
+// }
+
+// 상품 아이템 컴포넌트 분리
+// const ProductItem = memo(function ProductItem({ 
+//   item, 
+//   index, 
+//   isRankingPage, 
+//   imageUrl, 
+//   onProductClick 
+// }: { 
+//   item: Product; 
+//   index: number; 
+//   isRankingPage: boolean; 
+//   imageUrl: string | undefined;
+//   onProductClick: (id: number) => void;
+// }) {  // 여기서 화살표 함수(=>) 대신 중괄호({) 사용
+//   console.log(`ProductItem ${item.id} 렌더링`);
+
+//   return (
+//     <div className="flex flex-col items-center mt-10">
+//       <div className="aspect-square relative w-full">
+//         {/* 랭킹 뱃지 */}
+//         {isRankingPage && (
+//           <div className="absolute top-0 left-0 bg-black text-white text-sm px-2 py-1 z-10 text-center">
+//             {index + 1}
+//           </div>
+//         )}
+//         <Image
+//           src={
+//             item.url
+//               ? `${imageUrl}${item.url}?w=300&h=300&r=true`
+//               : "/images/noImage.svg"
+//           }
+//           alt={item.productName}
+//           fill
+//           loading="eager"
+//           fetchPriority="high"
+//           priority={true}
+//           className="h-full object-cover cursor-pointer"
+//           onClick={() => onProductClick(item.id)}
+//           unoptimized={true}
+//         />
+//       </div>
+//       <button
+//         className="flex flex-col items-start w-full overflow-hidden"
+//         onClick={() => onProductClick(item.id)}
+//       >
+//         <p className="text-left mt-1 text-sm font-semibold">
+//           {item.brandName}
+//         </p>
+//         <p className="text-left text-sm text-gray-500 truncate w-full">
+//           {item.productName}
+//         </p>
+//         <p className="text-left text-black-500 font-semibold">
+//           {item.price.toLocaleString()}원
+//         </p>
+//       </button>
+//     </div>
+//   );
+// });
 
 const categories = ["카테고리", "성별", "색상", "가격", "사이즈", "브랜드"];
 
 export default function Product() {
+  console.log("리렌더링");
+  
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -34,7 +96,7 @@ export default function Product() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const offsetIdRef = useRef(0); //리렌더없이 최신값 유지하기
   const [isLast, setIsLast] = useState(false);
-  const [productList, setProductList] = useState<Product[] | null>(null);
+  const [productList, setProductList] = useState<ProductType [] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -80,9 +142,9 @@ export default function Product() {
   };
 
   //특정 상품 클릭 시 url 변경
-  const handleProductClick = (id: number) => {
+  const handleProductClick = useCallback((id: number) => {
     router.push(`/detail/${id}`);
-  };
+  }, [router]);
 
   //상품 api
   const fetchProductList = async () => {
@@ -90,12 +152,11 @@ export default function Product() {
 
     try {
       const params = new URLSearchParams(window.location.search);
-      params.append("offsetId", offsetIdRef.current.toString()); //최신값 직접 접근
+      params.append("offsetId", offsetIdRef.current.toString()); //최신값 직접 접근 : 현재 페이지의 마지막 상품 id를 참조하며 이를 offsetId 파라미터로 추가한다. 
       console.log("요청 시 offsetId 값", offsetIdRef.current.toString());
       params.append("size", "48");
 
       const paramsString = `${productApiUrl}?${params.toString()}`;
-      console.log("요청 시 ParamsString", paramsString);
       const response = await getProduct(paramsString);
 
       if (!response) throw new Error("상품 목록 API 요청 실패");
@@ -103,7 +164,7 @@ export default function Product() {
       const data = await response;
       console.log("상품 목록 api 응답 데이터:", data);
 
-      const formattedData = data.data.map((item: Product) => ({
+      const formattedData = data.data.map((item: ProductType ) => ({
         id: item.id,
         url: item.thumbnail?.path,
         brandName: item.brandName,
@@ -113,24 +174,12 @@ export default function Product() {
       console.log("매핑된 데이터:", formattedData);
 
       if (offsetIdRef.current === 0) {
-        // console.log("offsetId가 0일 때 productList 데이터 저장 로직");
-        // const uniqueProductsMap = new Map<number, Product>();
-        // formattedData.forEach((item: Product) => {
-        //   if (!uniqueProductsMap.has(item.id)) {
-        //     uniqueProductsMap.set(item.id, item);
-        //   }
-        // });
-
-        // const uniqueProducts = Array.from(uniqueProductsMap.values());
-        // console.log("중복된 productid 제거", uniqueProducts);
-
         setProductList(formattedData);
-        // setProductList(uniqueProducts);
       } else {
         setProductList((prev) => [
           ...(prev ?? []),
           ...formattedData.filter(
-            (newItem: Product) =>
+            (newItem: ProductType ) =>
               !(prev ?? []).some((item) => item.id === newItem.id)
           ),
         ]);
@@ -142,37 +191,13 @@ export default function Product() {
 
       console.log("offsetId 업데이트 이후", offsetIdRef.current);
 
-      // if (offsetIdRef.current === 0) {
-
-      //   console.log("offsetId가 0일 때 productList 데이터 저장 로직");
-      //   const uniqueProductsMap = new Map<number, Product>();
-      //   formattedData.forEach((item: Product) => {
-      //     if (!uniqueProductsMap.has(item.id)) {
-      //       uniqueProductsMap.set(item.id, item);
-      //     }
-      //   });
-
-      //   const uniqueProducts = Array.from(uniqueProductsMap.values());
-      //   console.log("중복된 productid 제거", uniqueProducts);
-
-      //   // setProductList(formattedData);
-      //   setProductList(uniqueProducts);
-      // } else {
-      //   setProductList((prev) => [
-      //     ...(prev ?? []),
-      //     ...formattedData.filter(
-      //       (newItem: Product) =>
-      //         !(prev ?? []).some((item) => item.id === newItem.id)
-      //     ),
-      //   ]);
-      // }
-
       setIsLast(data.pageable.isLast);
       setIsLoading(false);
       console.log("3. 로딩 상태", isLoading);
       console.log("상품 목록 api 호출 완료");
     } catch (error) {
       console.error("상품 목록 API 요청 에러:", error);
+      alert('상품 목록을 불러오는데 실패했습니다.');
     }
   };
 
@@ -209,7 +234,7 @@ export default function Product() {
     return () => {
       if (triggerRef.current) observer.unobserve(triggerRef.current);
     };
-  }, [productList]); //수정 전 : 왜 의존성 배열에 page, isLoading, isLast 넣어야 무한스크롤 트리거 되는지 모르겠음.
+  }, [productList]);
 
   return (
     <>
@@ -285,53 +310,64 @@ export default function Product() {
             <>
               {/* 기존 상품 UI : productList가 null이 아니고 비어있지 않을 때*/}
               {productList &&
+                // productList.map((item, index) => (
+                //   <div
+                //     key={item.id}
+                //     className="flex flex-col items-center mt-10"
+                //   >
+                //     <div className="aspect-square relative w-full">
+                     
+                //       {isRankingPage && (
+                //         <div className="absolute top-0 left-0 bg-black text-white text-sm px-2 py-1 z-10 text-center">
+                //           {index + 1}
+                //         </div>
+                //       )}
+                //       <Image
+                //         src={
+                //           item.url
+                //             ? `${imageUrl}${item.url}?w=300&h=300&r=true`
+                //             : "/images/noImage.svg"
+                //         }
+                //         alt={item.productName}
+                //         fill
+                //         loading="eager"
+                //         fetchPriority="high"
+                //         priority={true}
+                //         className="h-full object-cover cursor-pointer"
+                //         onClick={() => handleProductClick(item.id)}
+                //         unoptimized={true}
+                //       />
+                //     </div>
+                //     <button
+                //       className="flex flex-col items-start w-full overflow-hidden"
+                //       onClick={() => handleProductClick(item.id)}
+                //     >
+                //       <p className="text-left mt-1 text-sm font-semibold">
+                //         {" "}
+                //         {item.brandName}{" "}
+                //       </p>
+                //       <p className="text-left text-sm text-gray-500 truncate w-full">
+                //         {" "}
+                //         {item.productName}{" "}
+                //       </p>
+                //       <p className="text -left text-black-500 font-semibold">
+                //         {" "}
+                //         {item.price.toLocaleString()}원
+                //       </p>
+                //     </button>
+                //   </div>
+                // ))
                 productList.map((item, index) => (
-                  <div
+                  <ProductItem
                     key={item.id}
-                    className="flex flex-col items-center mt-10"
-                  >
-                    <div className="aspect-square relative w-full">
-                      {/* 랭킹 뱃지 */}
-                      {isRankingPage && (
-                        <div className="absolute top-0 left-0 bg-black text-white text-sm px-2 py-1 z-10 text-center">
-                          {index + 1}
-                        </div>
-                      )}
-                      <Image
-                        src={
-                          item.url
-                            ? `${imageUrl}${item.url}?w=300&h=300&r=true`
-                            : "/images/noImage.svg"
-                        }
-                        alt={item.productName}
-                        fill
-                        loading="eager"
-                        fetchPriority="high"
-                        priority={true}
-                        className="h-full object-cover cursor-pointer"
-                        onClick={() => handleProductClick(item.id)}
-                        unoptimized={true}
-                      />
-                    </div>
-                    <button
-                      className="flex flex-col items-start w-full overflow-hidden"
-                      onClick={() => handleProductClick(item.id)}
-                    >
-                      <p className="text-left mt-1 text-sm font-semibold">
-                        {" "}
-                        {item.brandName}{" "}
-                      </p>
-                      <p className="text-left text-sm text-gray-500 truncate w-full">
-                        {" "}
-                        {item.productName}{" "}
-                      </p>
-                      <p className="text -left text-black-500 font-semibold">
-                        {" "}
-                        {item.price.toLocaleString()}원
-                      </p>
-                    </button>
-                  </div>
-                ))}
+                    item={item}
+                    index={index}
+                    isRankingPage={isRankingPage}
+                    imageUrl={imageUrl}
+                    onProductClick={handleProductClick}
+                  />
+                ))
+              }
 
               {/* 로딩 : isLoading이 true일 때만 렌더링*/}
               {isLoading &&
